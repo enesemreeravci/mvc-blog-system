@@ -24,4 +24,15 @@ class User
             ':password' => $password
         ]);
     }
+
+    public function findByEmail(string $email): ?array
+    {
+        $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':email' => $email]);
+
+        $user = $stmt->fetch();
+
+        return $user ?: null;
+    }
 }

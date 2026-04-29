@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Core/Controller.php';
+require_once __DIR__ . '/../Core/Session.php';
 require_once __DIR__ . '/../Models/User.php';
 
 class AuthController extends Controller
@@ -9,31 +10,68 @@ class AuthController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $username = $_POST['username'] ?? '';
-            $email = $_POST['email'] ?? '';
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
 
-            // basic validation
             if (!$username || !$email || !$password) {
-                echo "All fields are required!";
-                return;
+                Session::setFlash('error', 'All fields are required!');
+                header('Location: /mvc_blog_system/public/?url=register');
+                exit;
             }
 
-            // hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             $userModel = new User();
             $success = $userModel->create($username, $email, $hashedPassword);
 
             if ($success) {
-                echo "User registered successfully!";
+                Session::setFlash('success', 'Registration successful!');
             } else {
-                echo "Registration failed!";
+                Session::setFlash('error', 'Registration failed!');
             }
 
-            return;
+            header('Location: /mvc_blog_system/public/?url=register');
+            exit;
         }
 
         $this->view('auth/register');
     }
+
+    public function login(): void
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+
+            if(!$email || !$password)
+            {
+                Session::setFlash('error', 'All fields are required!');
+                header('Location: /mvc_blog_system/public/?url=login');
+                exit;
+            }
+            $userModel = new User();
+            $user = $userModel->findByEmail($email);
+
+            if(!$user || !password_verify($password, $user['password']))
+            {
+                Session::setFlash('error', 'Invalid credentials');
+                header('Location: /mvc_blog_system/public/?url=login');
+                exit;
+            }
+
+            // store user in session
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'username' => $user['username'],
+                'role' => $user['role']
+            ];
+
+            Session::setFlash('success', 'Logged in successfully!');
+            header('Location: /mvc_blog_system/public/');
+            exit;
+        }
+        $this->view('auth/login');
+    }   
 }

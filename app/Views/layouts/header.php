@@ -14,3 +14,18 @@
 </nav>
 
 <div class="container">
+
+<?php    
+require_once __DIR__ . '/../../Core/Session.php';
+
+$success = Session::getFlash('success');
+$error = Session::getFlash('error');
+?>
+
+<?php if ($success): ?>
+    <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+<?php endif; ?>
+
+<?php if ($error): ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+<?php endif; ?>
