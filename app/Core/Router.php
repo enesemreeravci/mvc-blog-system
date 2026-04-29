@@ -23,6 +23,26 @@ class Router
                 $controller->login();
                 break;
             
+            case 'logout':
+                $controller = new AuthController();
+                $controller->logout();
+                break;
+            
+            case 'posts/create':
+                $controller = new PostController();
+                $controller->create();
+                break;
+
+            case 'posts/edit':
+                $controller = new PostController();
+                $controller->edit();
+                break;
+
+            case 'posts/delete':
+                $controller = new PostController();
+                $controller->delete();
+                break;
+                
             default:
                 echo "404 Not found";
                 break;

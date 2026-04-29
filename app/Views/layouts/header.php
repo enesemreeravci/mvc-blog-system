@@ -7,15 +7,28 @@
 </head>
 
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
         <a class="navbar-brand" href="/mvc_blog_system/public/">MVC Blog</a>
+
+        <div>
+            <?php if (isset($_SESSION['user'])): ?>
+                <span class="text-white me-3">
+                    Hello, <?= htmlspecialchars($_SESSION['user']['username']) ?>
+                </span>
+                <a class="btn btn-outline-light btn-sm" href="/mvc_blog_system/public/?url=logout">Logout</a>
+            <?php else: ?>
+                <a class="btn btn-outline-light btn-sm me-2" href="/mvc_blog_system/public/?url=login">Login</a>
+                <a class="btn btn-primary btn-sm" href="/mvc_blog_system/public/?url=register">Register</a>
+            <?php endif; ?>
+        </div>
     </div>
 </nav>
 
 <div class="container">
 
-<?php    
+<?php
 require_once __DIR__ . '/../../Core/Session.php';
 
 $success = Session::getFlash('success');

@@ -74,4 +74,13 @@ class AuthController extends Controller
         }
         $this->view('auth/login');
     }   
+
+    public function logout(): void
+    {
+        unset($_SESSION['user']);
+
+        Session::setFlash('success', 'Logged out successfully!');
+        header('Location: /mvc_blog_system/public/');
+        exit;
+    }
 }
