@@ -4,6 +4,15 @@
     <p>No posts yet.</p>
 <?php endif; ?>
 
+<form method="GET" action="/mvc_blog_system/public/" class="mb-4">
+    <input type="hidden" name="url" value="">
+    
+    <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="Search posts..." value="<?= htmlspecialchars($search ?? '') ?>">
+        <button class="btn btn-primary">Search</button>
+    </div>
+</form>
+
 <?php foreach ($posts as $post): ?>
     <div class="card mb-3">
         <div class="card-body">
@@ -39,3 +48,17 @@
         </div>
     </div>
 <?php endforeach; ?>
+
+<?php if (!empty($totalPages) && $totalPages > 1): ?>
+    <nav>
+        <ul class="pagination">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                    <a class="page-link" href="/mvc_blog_system/public/?page=<?= $i ?>">
+                        <?= $i ?>
+                    </a>
+                </li>
+            <?php endfor; ?>
+        </ul>
+    </nav>
+<?php endif; ?>

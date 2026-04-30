@@ -96,6 +96,7 @@ class PostController extends Controller
         $this->view('posts/edit', ['post' => $post]);
     }
 
+    //delete posts
     public function delete(): void
     {
         requireLogin();
@@ -188,6 +189,37 @@ class PostController extends Controller
 
         Session::setFlash('success', 'Comment added.');
         header('Location: /mvc_blog_system/public/?url=post&slug=' . $post['slug']);
+        exit;
+    }
+
+    public function deleteComment(): void
+    {
+        requireLogin();
+
+        $id = (int)($_GET['id'] ?? 0);
+
+        $commentModel = new Comment();
+        $comment = $commentModel->findById($id);
+
+        if(!$comment)
+        {
+            Session::setFlash('error', 'Comment not found');
+            header('Location: /mvc_blog_system/public/');
+            exit;
+        }
+
+        //only owner or admin
+        if($comment['user_id'] != $_SESSION['user']['id'] && $_SESSION['user']['role'] !== 'admin')
+        {
+            Session::setFlash('error', 'You cannot delete this comment.');
+            header('Location: /mvc_blog_system/public/');
+            exit;
+        }
+
+        $commentModel->deleteComment($id);
+        Session::setFlash('success', 'Comment deleted.');
+        // redirect back to post
+        header('Location: /mvc_blog_system/public/?url=post&slug=' . $_GET['slug']);
         exit;
     }
 }

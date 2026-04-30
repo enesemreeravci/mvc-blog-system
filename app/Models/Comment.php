@@ -40,4 +40,22 @@ class Comment
 
         return $stmt->fetchAll();
     }
+
+    public function findById(int $id): ?array
+    {
+        $sql = "SELECT * FROM comments WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['id' => $id]);
+
+        $comment = $stmt->fetch();
+        return $comment ?: null;
+    }
+
+    public function deleteComment(int $id): bool
+    {
+        $sql = "DELETE FROM comments WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        
+        return $stmt->execute(['id' => $id]);
+    }
 }

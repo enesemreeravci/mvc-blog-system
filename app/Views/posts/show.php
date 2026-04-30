@@ -33,11 +33,27 @@
 <?php foreach ($comments as $comment): ?>
     <div class="card mb-2">
         <div class="card-body">
+
             <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
+
             <small>
                 By <?= htmlspecialchars($comment['username']) ?>
                 on <?= htmlspecialchars($comment['created_at']) ?>
             </small>
+
+            <?php if (isset($_SESSION['user']) && 
+                ($_SESSION['user']['id'] == $comment['user_id'] || $_SESSION['user']['role'] === 'admin')): ?>
+
+                <div class="mt-2">
+                    <a class="btn btn-sm btn-danger"
+                       href="/mvc_blog_system/public/?url=comments/delete&id=<?= $comment['id'] ?>&slug=<?= $post['slug'] ?>"
+                       onclick="return confirm('Delete this comment?')">
+                        Delete
+                    </a>
+                </div>
+
+            <?php endif; ?>
+
         </div>
     </div>
 <?php endforeach; ?>

@@ -94,4 +94,43 @@ class Post
         return $post ?: null;
     }
     
-}
+    public function search(string $term): array
+    {
+        $sql = "SELECT posts.*, users.username
+                FROM posts
+                JOIN users ON posts.user_id = user_id
+                WHERE posts.status = 'published'
+                AND (posts.title LIKE :term OR posts.content LIKE :term)
+                ORDER BY posts.created_At DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':term' => '%' . $term . '%']);
+
+        return $stmt->fetchAll();
+    }
+
+    public function getPaginated(int $limit, int $offset): array
+    {
+        $sql = "SELECT posts.*, users.username
+                FROM posts
+                JOIN users ON posts.user_id = users.id
+                WHERE posts.status = 'published'
+                ORDER BY posts.created_at DESC
+                LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function countPosts(): int
+    {
+        $stmt = $this->conn->query("SELECT COUNT(*) as total FROM posts WHERE status = 'published'");
+        $result = $stmt->fetch();
+
+       return (int)$result['total'];
+    }
+}   
