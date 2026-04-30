@@ -42,6 +42,16 @@ class Router
                 $controller = new PostController();
                 $controller->delete();
                 break;
+
+            case 'post':
+                $controller = new PostController();
+                $controller->show();
+                break;
+                
+            case 'comments/store':
+                $controller = new PostController();
+                $controller->comment();
+                break;
                 
             default:
                 echo "404 Not found";

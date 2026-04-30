@@ -77,5 +77,21 @@ class Post
 
         return $stmt->execute([':id' => $id]);
     }
+
+    public function findBySlug(string $slug): ?array
+    {
+        $sql = "SELECT posts.*, users.username
+                FROM posts
+                JOIN users ON posts.user_id = users.id
+                WHERE posts.slug = :slug AND  posts.status = 'published'
+                LIMIT 1";
+            
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':slug' => $slug]);
+
+        $post = $stmt->fetch();
+
+        return $post ?: null;
+    }
     
 }

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Core/Session.php';
 require_once __DIR__ . '/../Core/Middleware.php';
 require_once __DIR__ . '/../Models/Post.php';
+require_once __DIR__ . '/../Models/Comment.php';
 
 class PostController extends Controller
 {
@@ -121,6 +122,72 @@ class PostController extends Controller
 
         Session::setFlash('success', 'Post deleted successfully.');
         header('Location: /mvc_blog_system/public/');
+        exit;
+    }
+
+    public function show(): void
+    {
+        $slug = $_GET['slug'] ?? '';
+
+        if(!$slug)
+        {
+            echo "Post not found";
+            return;
+        }
+
+        $postModel = new Post();
+        $post = $postModel->findBySlug($slug);
+
+        if(!$post)
+        {
+            echo "Post not found";
+            return;
+        }
+
+        $commentModel = new Comment();
+        $comments = $commentModel->getByPostId($post['id']);
+
+        $this->view('posts/show', [
+        'post' => $post,
+        'comments' => $comments
+        ]);
+    }
+    
+    public function comment(): void
+    {
+        requireLogin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') 
+        {
+            header('Location: /mvc_blog_system/public/');
+            exit;
+        }
+
+        $postId = (int)($_POST['post_id'] ?? 0);
+        $content = trim($_POST['content'] ?? '');
+
+        if (!$postId || !$content) 
+        {
+            Session::setFlash('error', 'Comment cannot be empty.');
+            header('Location: /mvc_blog_system/public/');
+            exit;
+        }
+
+        $postModel = new Post();
+        $post = $postModel->findById($postId);
+
+        if (!$post) 
+        {
+            Session::setFlash('error', 'Post not found.');
+            header('Location: /mvc_blog_system/public/');
+            exit;
+        }
+
+        $commentModel = new Comment();
+        $commentModel->create($postId, $_SESSION['user']['id'], $content);
+
+        Session::setFlash('success', 'Comment added.');
+        header('Location: /mvc_blog_system/public/?url=post&slug=' . $post['slug']);
         exit;
     }
 }
