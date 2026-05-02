@@ -57,7 +57,27 @@ class Router
                 $controller = new PostController();
                 $controller->deleteComment();
                 break;
-                
+
+            case 'admin':
+                $controller = new AdminController();
+                $controller->index();
+                break;
+            
+            case 'admin/categories':
+                $controller = new AdminCategoryController();
+                $controller->index();
+                break;
+
+            case 'admin/categories/store':
+                $controller = new AdminCategoryController();
+                $controller->store();
+                break;
+            
+            case 'admin/categories/delete':
+                $controller = new AdminCategoryController();
+                $controller->delete();
+                exit;
+
             default:
                 echo "404 Not found";
                 break;

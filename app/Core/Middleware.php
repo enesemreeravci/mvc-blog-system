@@ -16,7 +16,7 @@ function requireAdmin(): void
 {
     requireLogin();
 
-    if(!isset($_SESSION['user']['role']) !== 'admin')
+    if(($_SESSION['user']['role']) !== 'admin')
     {
         Session::setFlash('error', 'Admin access required');
         header('Location: /mvc_blog_system/public/');
