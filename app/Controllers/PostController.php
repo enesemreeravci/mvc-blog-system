@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Core/Session.php';
 require_once __DIR__ . '/../Core/Middleware.php';
+require_once __DIR__ . '/../Core/Csrf.php';
 require_once __DIR__ . '/../Models/Post.php';
 require_once __DIR__ . '/../Models/Comment.php';
 
@@ -13,6 +14,13 @@ class PostController extends Controller
         requireLogin();
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
+            if(!Csrf::validate($_POST['csrf_token'] ?? null))
+            {
+                Session::setFlash('error', 'Invalid CSRF token');
+                header('Location: /mvc_blog_system/public/');
+                exit;
+            }
+
             $title = trim($_POST['title'] ?? '');
             $content = trim($_POST['content'] ?? '');
             $excerpt = trim($_POST['excerpt'] ?? '');

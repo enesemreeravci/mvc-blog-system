@@ -12,6 +12,7 @@
 
 <?php if (isset($_SESSION['user'])): ?>
     <form method="POST" action="/mvc_blog_system/public/?url=comments/store" class="mb-4">
+        <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
         <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
 
         <div class="mb-3">

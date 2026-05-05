@@ -2,14 +2,21 @@
 
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Core/Session.php';
+require_once __DIR__ . '/../Core/Csrf.php';
 require_once __DIR__ . '/../Models/User.php';
 
 class AuthController extends Controller
 {
     public function register(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+        {
+            if(!Csrf::validate($_POST['csrf_token'] ?? null))
+            {
+                Session::setFlash('error', 'Invalid CSRF token');
+                header('Location: /mvc_blog_system/public/');
+                exit;
+            }
             $username = trim($_POST['username'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';

@@ -1,6 +1,7 @@
 <h2>Create Post</h2>
 
 <form method="POST" action="/mvc_blog_system/public/?url=posts/create">
+    <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
     <div class="mb-3">
         <label class="form-label">Title</label>
         <input type="text" name="title" class="form-control">

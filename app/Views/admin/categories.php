@@ -1,6 +1,7 @@
 <h2>Categories</h2>
 
 <form method="POST" action="/mvc_blog_system/public/?url=admin/categories/store" class="mb-4">
+    <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
     <input type="text" name="name" class="form-control mb-2" placeholder="New category name">
     <button class="btn btn-primary">Add Category</button>
 </form>

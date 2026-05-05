@@ -1,6 +1,7 @@
 <h2>Edit Post</h2>
 
 <form method="POST" action="/mvc_blog_system/public/?url=posts/edit&id=<?= $post['id'] ?>">
+    <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
     <div class="mb-3">
         <label class="form-label">Title</label>
         <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($post['title']) ?>">
