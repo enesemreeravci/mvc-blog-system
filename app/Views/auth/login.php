@@ -1,67 +1,45 @@
-<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="card shadow-lg border-0" style="width: 420px; border-radius: 16px;">
-        
+<div class="min-vh-100 d-flex justify-content-center align-items-center bg-light">
+    <div class="card shadow-lg border-0 rounded-4" style="width: 100%; max-width: 420px;">
         <div class="card-body p-4">
 
-            <h3 class="text-center mb-4 fw-bold">Welcome Back</h3>
+            <h3 class="text-center fw-bold mb-2">Welcome Back</h3>
+            <p class="text-center text-muted mb-4">Login to continue to MVC Blog</p>
 
             <form method="POST" action="/mvc_blog_system/public/?url=login">
                 <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
 
-                <!-- Email -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Email address</label>
                     <input 
                         type="email" 
                         name="email" 
-                        class="form-control" 
-                        placeholder="Enter your email"
+                        class="form-control form-control-lg" 
+                        placeholder="Enter email"
                         required
                     >
                 </div>
 
-                <!-- Password -->
-                <div class="mb-3">
+                <div class="mb-4">
                     <label class="form-label fw-semibold">Password</label>
                     <input 
                         type="password" 
                         name="password" 
-                        class="form-control" 
-                        placeholder="Enter your password"
+                        class="form-control form-control-lg" 
+                        placeholder="Enter password"
                         required
                     >
                 </div>
 
-                <!-- Remember / Forgot -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="remember">
-                        <label class="form-check-label small" for="remember">
-                            Remember me
-                        </label>
-                    </div>
-
-                    <a href="#" class="small text-decoration-none">
-                        Forgot password?
-                    </a>
-                </div>
-
-                <!-- Button -->
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-success py-2 fw-semibold">
+                    <button type="submit" class="btn btn-success btn-lg">
                         Login
                     </button>
                 </div>
-
             </form>
 
-            <!-- Divider -->
-            <div class="text-center my-3 text-muted">or</div>
-
-            <!-- Register link -->
-            <p class="text-center mb-0">
-                Don’t have an account?
-                <a href="/mvc_blog_system/public/?url=register" class="fw-semibold text-decoration-none">
+            <p class="text-center text-muted mt-4 mb-0">
+                Don't have an account?
+                <a href="/mvc_blog_system/public/?url=register" class="fw-semibold">
                     Register
                 </a>
             </p>
