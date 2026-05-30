@@ -8,6 +8,7 @@ require_once __DIR__ . '/app/Controllers/AuthController.php';
 require_once __DIR__ . '/app/Controllers/PostController.php';
 require_once __DIR__ . '/app/Controllers/AdminController.php';
 require_once __DIR__ . '/app/Controllers/AdminCategoryController.php';
+require_once __DIR__ . '/app/Core/Csrf.php';
 
 $router = new Router();
 $router->route();

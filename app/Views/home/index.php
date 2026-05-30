@@ -1,4 +1,21 @@
-<h1>Blog Posts</h1>
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold">
+            Personal Blog System
+        </h1>
+
+        <p class="col-md-8 fs-5">
+            Create posts, comment on articles, manage categories and explore content.
+        </p>
+
+        <?php if (isset($_SESSION['user'])): ?>
+            <a class="btn btn-primary btn-lg"
+               href="/mvc_blog_system/public/?url=posts/create">
+               Create New Post
+            </a>
+        <?php endif; ?>
+    </div>
+</div>
 
 <?php if (empty($posts)): ?>
     <p>No posts yet.</p>

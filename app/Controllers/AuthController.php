@@ -29,15 +29,24 @@ class AuthController extends Controller
 
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $userModel = new User();
-            $success = $userModel->create($username, $email, $hashedPassword);
+            $userModel = new User();    
+            //try and catch
+            try 
+            {
+                $userModel = new User();
+                $success = $userModel->create($username, $email, $hashedPassword);
 
-            if ($success) {
-                Session::setFlash('success', 'Registration successful!');
-            } else {
-                Session::setFlash('error', 'Registration failed!');
+                if ($success) {
+                    Session::setFlash('success', 'Registration successful!');
+                } else {
+                    Session::setFlash('error', 'Registration failed!');
+                }
+
+            } 
+            catch (PDOException $e) 
+            {
+                Session::setFlash('error', 'Database error occurred.');
             }
-
             header('Location: /mvc_blog_system/public/?url=register');
             exit;
         }
@@ -49,6 +58,12 @@ class AuthController extends Controller
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
+            if (!Csrf::validate($_POST['csrf_token'] ?? null)) 
+            {
+            Session::setFlash('error', 'Invalid CSRF token.');
+            header('Location: /mvc_blog_system/public/?url=login');
+            exit;
+            }
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
 

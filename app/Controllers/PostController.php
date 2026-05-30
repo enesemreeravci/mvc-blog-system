@@ -37,22 +37,33 @@ class PostController extends Controller
             $slug = $slug . '-' . time();
         
             $postModel = new Post();
-            $success = $postModel->create(
-                $title,
-                $slug,
-                $content,
-                $excerpt,
-                $_SESSION['user']['id'],
-                $status
-            );
 
-            if($success)
+            try 
             {
-                Session::setFlash('success', 'Post created successfully.');
-                header('Location: /mvc_blog_system/public/?url=posts/create');
-                exit;
+                $postModel = new Post();
+                $success = $postModel->create(
+                    $title,
+                    $slug,
+                    $content,
+                    $excerpt,
+                    $_SESSION['user']['id'],
+                    $status,
+                    $categoryId
+                );
+
+                if ($success) {
+                    Session::setFlash('success', 'Post created successfully.');
+                    header('Location: /mvc_blog_system/public/');
+                    exit;
+                }
+
+                Session::setFlash('error', 'Post creation failed.');
+            } 
+            catch (PDOException $e) 
+            {
+                Session::setFlash('error', 'Database error while creating post.');
             }
-            Session::setFlash('error', 'Post creation failed.');
+
             header('Location: /mvc_blog_system/public/?url=posts/create');
             exit;
         }
@@ -83,24 +94,40 @@ class PostController extends Controller
 
         if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
+            if (!Csrf::validate($_POST['csrf_token'] ?? null)) 
+            {
+                Session::setFlash('error', 'Invalid CSRF token.');
+                header('Location: /mvc_blog_system/public/?url=posts/create');
+                exit;
+            }
+
             $title = trim($_POST['title'] ?? '');
-            $content = trim($_POST['title'] ?? '');
+            $content = trim($_POST['content'] ?? '');
             $excerpt = trim($_POST['excerpt'] ?? '');
             $status = $_POST['status'] ?? 'draft';
 
             if(!$title || !$content)
             {
                 Session::setFlash('error', 'Title and content are required');
-                header('Location: /mvc_blog_systen/public/?url=posts/edit$id' . $id);
+                header('Location: /mvc_blog_system/public/?url=posts/edit&id=' . $id);
                 exit;
             }
+            //try and catch
+            try 
+            {
+                $postModel->update($id, $title, $content, $excerpt, $status);
 
-            $postModel->update($id, $title, $content, $excerpt, $status);
-
-            Session::setFlash('success', 'Post updated successfully.');
-            header('Location: /mvc_blog_system/public/');
-            exit;
-        }
+                Session::setFlash('success', 'Post updated successfully.');
+                header('Location: /mvc_blog_system/public/');
+                exit;
+            } 
+            catch (PDOException $e) 
+            {
+                Session::setFlash('error', 'Database error while updating post.');
+                header('Location: /mvc_blog_system/public/?url=posts/edit&id=' . $id);
+                exit;
+            }
+                    }
         $this->view('posts/edit', ['post' => $post]);
     }
 
@@ -127,9 +154,17 @@ class PostController extends Controller
             exit;
         }
 
-        $postModel->delete($id);
+        try
+        {
+            $postModel->delete($id);
 
-        Session::setFlash('success', 'Post deleted successfully.');
+            Session::setFlash('success', 'Post deleted successfully.');
+        } 
+        catch (PDOException $e) 
+        {
+            Session::setFlash('error', 'Database error while deleting post.');
+        }
+
         header('Location: /mvc_blog_system/public/');
         exit;
     }
@@ -161,13 +196,20 @@ class PostController extends Controller
         'comments' => $comments
         ]);
     }
-    
+    //comment section
     public function comment(): void
     {
         requireLogin();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') 
         {
+            header('Location: /mvc_blog_system/public/');
+            exit;
+        }
+        
+        if (!Csrf::validate($_POST['csrf_token'] ?? null)) 
+        {
+            Session::setFlash('error', 'Invalid CSRF token.');
             header('Location: /mvc_blog_system/public/');
             exit;
         }
@@ -192,14 +234,21 @@ class PostController extends Controller
             exit;
         }
 
-        $commentModel = new Comment();
-        $commentModel->create($postId, $_SESSION['user']['id'], $content);
+        try 
+        {
+            $commentModel = new Comment();
+            $commentModel->create($postId, $_SESSION['user']['id'], $content);
 
-        Session::setFlash('success', 'Comment added.');
+            Session::setFlash('success', 'Comment added.');
+        } 
+        catch (PDOException $e) 
+        {
+            Session::setFlash('error', 'Database error while adding comment.');
+        }
+
         header('Location: /mvc_blog_system/public/?url=post&slug=' . $post['slug']);
         exit;
     }
-
     public function deleteComment(): void
     {
         requireLogin();

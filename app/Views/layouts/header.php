@@ -56,33 +56,52 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container main-container">
+    <div class="container">
+
         <a class="navbar-brand" href="/mvc_blog_system/public/">
             MVC Blog
         </a>
 
-        <div class="d-flex align-items-center gap-2">
+        <div>
+
+            <a class="btn btn-outline-light btn-sm me-2"
+               href="/mvc_blog_system/public/">
+               Home
+            </a>
+
             <?php if (isset($_SESSION['user'])): ?>
 
-                <span class="user-badge">
-                    Hello, <?= htmlspecialchars($_SESSION['user']['username']) ?>
-                </span>
+                <a class="btn btn-success btn-sm me-2"
+                   href="/mvc_blog_system/public/?url=posts/create">
+                   New Post
+                </a>
 
-                <a class="btn btn-outline-light btn-sm" href="/mvc_blog_system/public/?url=logout">
-                    Logout
+                <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                    <a class="btn btn-warning btn-sm me-2"
+                       href="/mvc_blog_system/public/?url=admin">
+                       Admin
+                    </a>
+                <?php endif; ?>
+
+                <a class="btn btn-outline-light btn-sm"
+                   href="/mvc_blog_system/public/?url=logout">
+                   Logout
                 </a>
 
             <?php else: ?>
 
-                <a class="btn btn-outline-light btn-sm" href="/mvc_blog_system/public/?url=login">
-                    Login
+                <a class="btn btn-outline-light btn-sm me-2"
+                   href="/mvc_blog_system/public/?url=login">
+                   Login
                 </a>
 
-                <a class="btn btn-primary btn-sm" href="/mvc_blog_system/public/?url=register">
-                    Register
+                <a class="btn btn-primary btn-sm"
+                   href="/mvc_blog_system/public/?url=register">
+                   Register
                 </a>
 
             <?php endif; ?>
+
         </div>
     </div>
 </nav>
