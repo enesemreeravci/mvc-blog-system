@@ -26,10 +26,17 @@
             <small class="text-muted ms-2"><?= htmlspecialchars($cat['slug']) ?></small>
         </div>
 
-        <a href="/mvc_blog_system/public/?url=admin/categories/delete&id=<?= $cat['id'] ?>"
-           class="btn btn-danger btn-sm"
-           onclick="return confirm('Delete this category?')">
-            Delete
-        </a>
+        <div>
+            <a href="/mvc_blog_system/public/?url=admin/categories/edit&id=<?= $cat['id'] ?>"
+               class="btn btn-warning btn-sm">
+                Edit
+            </a>
+
+            <a href="/mvc_blog_system/public/?url=admin/categories/delete&id=<?= $cat['id'] ?>"
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Delete this category?')">
+                Delete
+            </a>
+        </div>
     </div>
 <?php endforeach; ?>

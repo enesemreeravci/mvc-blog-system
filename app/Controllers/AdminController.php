@@ -2,8 +2,7 @@
 
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Core/Middleware.php';
-require_once __DIR__ . '/../Core/Csrf.php';
-
+require_once __DIR__ . '/../Models/Category.php';
 
 class AdminController extends Controller
 {
@@ -11,6 +10,11 @@ class AdminController extends Controller
     {
         requireAdmin();
 
-        $this->view('admin/index');
+        $categoryModel = new Category();
+        $categories = $categoryModel->getWithPostCounts();
+
+        $this->view('admin/index', [
+            'categories' => $categories
+        ]);
     }
 }

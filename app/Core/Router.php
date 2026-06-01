@@ -72,11 +72,21 @@ class Router
                 $controller = new AdminCategoryController();
                 $controller->store();
                 break;
-            
+
+            case 'admin/categories/edit':
+                $controller = new AdminCategoryController();
+                $controller->edit();
+                break;
+
+            case 'admin/categories/update':
+                $controller = new AdminCategoryController();
+                $controller->update();
+                break;
+
             case 'admin/categories/delete':
                 $controller = new AdminCategoryController();
                 $controller->delete();
-                exit;
+                break;
 
             default:
                 echo "404 Not found";

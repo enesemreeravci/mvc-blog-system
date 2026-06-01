@@ -1,10 +1,26 @@
 <h2>Create Post</h2>
 
 <form method="POST" action="/mvc_blog_system/public/?url=posts/create">
+
     <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
+
     <div class="mb-3">
         <label class="form-label">Title</label>
         <input type="text" name="title" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Category</label>
+
+        <select name="category_id" class="form-control">
+            <option value="">Select Category</option>
+
+            <?php foreach ($categories as $category): ?>
+                <option value="<?= $category['id'] ?>">
+                    <?= htmlspecialchars($category['name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
     </div>
 
     <div class="mb-3">
@@ -19,11 +35,15 @@
 
     <div class="mb-3">
         <label class="form-label">Status</label>
+
         <select name="status" class="form-control">
             <option value="draft">Draft</option>
             <option value="published">Published</option>
         </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create Post</button>
+    <button type="submit" class="btn btn-primary">
+        Create Post
+    </button>
+
 </form>

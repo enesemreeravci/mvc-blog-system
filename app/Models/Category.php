@@ -24,8 +24,31 @@ class Category
     {
         $sql = "INSERT INTO categories (name, slug) VALUES (:name, :slug)";
         $stmt = $this->conn->prepare($sql);
-        
+
         return $stmt->execute([
+            ':name' => $name,
+            ':slug' => $slug
+        ]);
+    }
+
+    public function findById(int $id): ?array
+    {
+        $sql = "SELECT * FROM categories WHERE id = :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':id' => $id]);
+
+        $category = $stmt->fetch();
+
+        return $category ?: null;
+    }
+
+    public function update(int $id, string $name, string $slug): bool
+    {
+        $sql = "UPDATE categories SET name = :name, slug = :slug WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':id' => $id,
             ':name' => $name,
             ':slug' => $slug
         ]);
@@ -37,5 +60,18 @@ class Category
         $stmt = $this->conn->prepare($sql);
 
         return $stmt->execute([':id' => $id]);
+    }
+
+    public function getWithPostCounts(): array
+    {
+        $sql = "SELECT categories.*, COUNT(posts.id) AS post_count
+                FROM categories
+                LEFT JOIN posts ON posts.category_id = categories.id
+                GROUP BY categories.id
+                ORDER BY categories.name ASC";
+
+        $stmt = $this->conn->query($sql);
+
+        return $stmt->fetchAll();
     }
 }
